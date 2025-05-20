@@ -25,3 +25,18 @@ System actor: System
     * System informs about the correct addition of an instance and presents the updated list of instances.
 * Librarian confirms book addition.
 * System informs about the correct addition of the book.
+
+
+
+Project Management Details:
+The project is managed using github Issues and github Projects in an agile way respecting the rules of Scrum.
+Every Product Backlog Item is entered as an Issue and is divided into smaller tasks when being selected to current sprint.
+Some side tasks (mainly management tasks), which aren't in the Product Backlog, are also entered to Issues.
+The project uses milestones to denote which tasks are part of a given sprint and which haven't still been chosen to any sprint and still belong to the Product Backlog.
+It also uses labels to denote importance, labour intensity and type of a task. Importance is given only to the high-level tasks meaning that subtasks aren't assigned importance.
+The github Project consists of 5 columns:
+* Product Backlog Items which still haven't been chosen to any sprint
+* Tasks which are part of the current sprint but hasn't been started yet
+* Tasks belonging to current sprint that are in progress
+* Finished tasks belonging to current sprint
+* Tasks which were done in previous sprints
