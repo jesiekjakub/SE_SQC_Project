@@ -4,24 +4,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import pl.put.poznan.sqc.logic.model.Scenario;
-import pl.put.poznan.sqc.logic.model.Step;
+import pl.put.poznan.sqc.logic.visitor.CountKeywords;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/count_keywords")
 public class CountKeywordsController {
-
-    private static final Logger logger = LoggerFactory.getLogger(CountStepsController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CountKeywordsController.class);
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public String post(@RequestBody Map<String, List<String>> body) {
-        List<String> steps = body.get("steps");
-        // count number of steps
-        return steps.toString();
+    public Map<String, Object> post(@RequestBody Scenario scenario) {
+        logger.info("Received scenario: {}", scenario.getTitle());
+
+        CountKeywords visitor = new CountKeywords();
+        scenario.accept(visitor);
+        int keywordSteps = (int) visitor.getResult();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("keywordCount", keywordSteps);
+        return response;
     }
-
-
 }
