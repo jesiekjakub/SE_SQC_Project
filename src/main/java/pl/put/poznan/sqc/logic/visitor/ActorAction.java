@@ -38,7 +38,7 @@ public class ActorAction implements Visitor {
         }
 
         if (!isValid) {
-            invalidSteps.add(new Step());
+            invalidSteps.add(step);
         }
 
         if (step.getSubsteps() != null) {
