@@ -1,10 +1,11 @@
+// src/main/java/pl/put/poznan/sqc/logic/visitor/CountSteps.java
 package pl.put.poznan.sqc.logic.visitor;
 
 import pl.put.poznan.sqc.logic.model.Scenario;
 import pl.put.poznan.sqc.logic.model.Step;
 
-public class CountKeywords implements Visitor {
-    private int keywordCount = 0;
+public class CountSteps implements Visitor {
+    private int totalSteps = 0;
 
     @Override
     public void visit(Scenario scenario) {
@@ -15,11 +16,7 @@ public class CountKeywords implements Visitor {
 
     @Override
     public void visit(Step step) {
-        String text = step.getText();
-        if (text != null && (text.startsWith("IF:") || text.startsWith("ELSE:") || text.startsWith("FOR EACH:"))) {
-            keywordCount++;
-        }
-
+        totalSteps++;
         if (step.getSubsteps() != null) {
             for (Step substep : step.getSubsteps()) {
                 substep.accept(this);
@@ -29,6 +26,6 @@ public class CountKeywords implements Visitor {
 
     @Override
     public Object getResult() {
-        return keywordCount;
+        return totalSteps;
     }
 }
