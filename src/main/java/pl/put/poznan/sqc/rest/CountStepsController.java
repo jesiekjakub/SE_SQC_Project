@@ -26,7 +26,6 @@ public class CountStepsController {
         int totalSteps = (int) visitor.getResult();
 
         Map<String, Object> response = new HashMap<>();
-        response.put("title", scenario.getTitle());
         response.put("totalStepCount", totalSteps);
         return response;
     }

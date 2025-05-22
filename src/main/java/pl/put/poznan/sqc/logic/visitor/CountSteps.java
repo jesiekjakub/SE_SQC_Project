@@ -16,7 +16,7 @@ public class CountSteps implements Visitor {
 
     @Override
     public void visit(Step step) {
-        totalSteps++; // Count this step
+        totalSteps++;
         if (step.getSubsteps() != null) {
             for (Step substep : step.getSubsteps()) {
                 substep.accept(this);
