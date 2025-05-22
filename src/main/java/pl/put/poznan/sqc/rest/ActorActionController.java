@@ -25,10 +25,9 @@ public class ActorActionController {
         ActorAction visitor = new ActorAction();
         scenario.accept(visitor);
         List<Step> invalidSteps = (List<Step>) visitor.getResult();
-        //int totalSteps = (int) visitor.getResult();
 
         Map<String, Object> response = new HashMap<>();
-        response.put("keywordCount", invalidSteps);
+        response.put("invalidSteps", invalidSteps);
         return response;
     }
 }
