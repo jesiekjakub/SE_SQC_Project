@@ -3,21 +3,26 @@ package pl.put.poznan.sqc.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import pl.put.poznan.sqc.logic.model.Scenario;
+import pl.put.poznan.sqc.logic.visitor.Download;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/download")
 public class DownloadController {
+    private static final Logger logger = LoggerFactory.getLogger(DownloadController.class);
 
-    private static final Logger logger = LoggerFactory.getLogger(CountStepsController.class);
+    @RequestMapping(method = RequestMethod.POST, produces = "text/plain")
+    public String post(@RequestBody Scenario scenario) {
+        logger.info("Preparing scenario for download: {}", scenario.getTitle());
 
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public String post(@RequestBody Map<String, List<String>> body) {
-        List<String> steps = body.get("steps");
-        // count number of steps
-        return steps.toString();
+        Download visitor = new Download();
+        scenario.accept(visitor);
+
+        @SuppressWarnings("unchecked")
+        List<String> numberedSteps = (List<String>) visitor.getResult();
+
+        return String.join("\n", numberedSteps);
     }
-
 }
