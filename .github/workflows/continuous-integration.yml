@@ -25,7 +25,7 @@ jobs:
         run: mvn clean package --no-transfer-progress
 
       - name: Upload JAR artifact
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v1
         with:
           name: scenario-quality-checker
           path: target/*.jar
