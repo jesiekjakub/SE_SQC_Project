@@ -34,7 +34,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ github.run_number }}
-          name: Jar build v${{ github.run_number }}
+          name: Jar build
           draft: false
           prerelease: false
           files: ${{ steps.find_jar.outputs.jar_file }}
