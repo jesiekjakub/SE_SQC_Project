@@ -27,8 +27,9 @@ public class CountStepsController {
 
         Map<String, Object> response = new HashMap<>();
         response.put("totalStepCount", totalSteps);
+        logger.debug("Step count: {}", totalSteps);
+        logger.info("Returning response");
         return response;
     }
-
 
 }

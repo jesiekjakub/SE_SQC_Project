@@ -23,6 +23,9 @@ public class DownloadController {
         @SuppressWarnings("unchecked")
         List<String> numberedSteps = (List<String>) visitor.getResult();
 
-        return String.join("\n", numberedSteps);
+        String text = String.join("\n", numberedSteps);
+        logger.debug("returned text: \n{}", text);
+        logger.info("Downloading file");
+        return text;
     }
 }
