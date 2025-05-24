@@ -24,6 +24,8 @@ public class CountKeywordsController {
 
         Map<String, Object> response = new HashMap<>();
         response.put("keywordCount", keywordSteps);
+        logger.debug("Keyword Count: {}", keywordSteps);
+        logger.info("Returning response");
         return response;
     }
 }
