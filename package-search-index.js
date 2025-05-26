@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"pl.put.poznan.sqc.app"},{"l":"pl.put.poznan.sqc.logic.model"},{"l":"pl.put.poznan.sqc.logic.visitor"},{"l":"pl.put.poznan.sqc.rest"}]
