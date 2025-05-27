@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - feat/continuous-integration
+      - feat/documentation
 
 jobs:
   build-and-release:
@@ -39,3 +40,13 @@ jobs:
           prerelease: false
           files: ${{ steps.find_jar.outputs.jar_file }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Javadoc
+        run: mvn javadoc:javadoc
+
+      - name: Upload Javadoc to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/site/apidocs
+          publish_branch: gh-pages
