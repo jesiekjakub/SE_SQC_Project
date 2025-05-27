@@ -1,14 +1,20 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
-      - feat/continuous-integration
-      - feat/documentation
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name for the release (e.g., v1.0.0)'
+        required: true
+        type: string
+      create_release:
+        description: 'Create a GitHub release'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
-  build-and-release:
+  build-and-docs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,10 +38,11 @@ jobs:
         run: echo "jar_file=$(find target -name '*.jar' -not -name '*-sources.jar' -not -name '*-javadoc.jar' | head -1)" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
+        if: ${{ inputs.create_release }}
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ github.run_number }}
-          name: Jar build
+          tag_name: ${{ inputs.tag_name }}
+          name: ${{ inputs.tag_name }}
           draft: false
           prerelease: false
           files: ${{ steps.find_jar.outputs.jar_file }}
@@ -46,6 +53,11 @@ jobs:
 
       - name: Upload Javadoc to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/site/apidocs
+          publish_branch: gh-pages
+
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./target/site/apidocs
