@@ -101,6 +101,35 @@ class CountKeywordsTest {
         verify(mockScenario).getSteps();
     }
 
+    @Test
+    void nestedStepsWithKeywords() {
+        Step parentStep = mock(Step.class);
+        Step childStep = mock(Step.class);
+
+        when(parentStep.getText()).thenReturn("IF: parent condition");
+        when(childStep.getText()).thenReturn("FOR EACH: item in list");
+        when(childStep.getSubsteps()).thenReturn(null);
+        when(parentStep.getSubsteps()).thenReturn(Collections.singletonList(childStep));
+        when(mockScenario.getSteps()).thenReturn(Collections.singletonList(parentStep));
+
+        doAnswer(invocation -> {
+            Visitor v = invocation.getArgument(0);
+            v.visit(parentStep);
+            return null;
+        }).when(parentStep).accept(any(Visitor.class));
+
+        doAnswer(invocation -> {
+            Visitor v = invocation.getArgument(0);
+            v.visit(childStep);
+            return null;
+        }).when(childStep).accept(any(Visitor.class));
+
+        visitor.visit(mockScenario);
+        Integer count = (Integer) visitor.getResult();
+
+        assertEquals(2, count);
+        verify(mockScenario).getSteps();
+    }
 
     @AfterEach
     void tearDown() {
