@@ -23,7 +23,7 @@ jobs:
           cache: maven
 
       - name: Build JAR
-        run: mvn clean package --no-transfer-progress
+        run: mvn clean verify --no-transfer-progress
 
       - name: Find JAR file
         id: find_jar
