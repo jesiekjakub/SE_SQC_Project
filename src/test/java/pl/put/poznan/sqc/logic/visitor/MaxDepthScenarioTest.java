@@ -55,6 +55,43 @@ class MaxDepthScenarioTest {
         verify(mockScenario).getSteps();
     }
 
+    @Test
+    void maxDepthIsTwo() {
+        visitor = new MaxDepthScenario(2);
+        Step parentStep = mock(Step.class);
+        Step childStep = mock(Step.class);
+        Step grandchildStep = mock(Step.class);
+
+        when(grandchildStep.getSubsteps()).thenReturn(null);
+        when(childStep.getSubsteps()).thenReturn(Collections.singletonList(grandchildStep));
+        when(parentStep.getSubsteps()).thenReturn(Collections.singletonList(childStep));
+        when(mockScenario.getSteps()).thenReturn(Collections.singletonList(parentStep));
+
+        doAnswer(invocation -> {
+            Visitor v = invocation.getArgument(0);
+            v.visit(parentStep);
+            return null;
+        }).when(parentStep).accept(any(Visitor.class));
+
+        doAnswer(invocation -> {
+            Visitor v = invocation.getArgument(0);
+            v.visit(childStep);
+            return null;
+        }).when(childStep).accept(any(Visitor.class));
+
+        doAnswer(invocation -> {
+            Visitor v = invocation.getArgument(0);
+            v.visit(grandchildStep);
+            return null;
+        }).when(grandchildStep).accept(any(Visitor.class));
+
+        visitor.visit(mockScenario);
+
+        verify(childStep).setSubsteps(null);
+        verify(parentStep, never()).setSubsteps(null);
+        verify(mockScenario).getSteps();
+    }
+
 
     @AfterEach
     void tearDown() {
