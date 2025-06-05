@@ -1,17 +1,16 @@
 package pl.put.poznan.sqc.logic.visitor;
 
-import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.put.poznan.sqc.logic.model.Scenario;
 import pl.put.poznan.sqc.logic.model.Step;
 
-
+import java.util.Arrays;
 import java.util.Collections;
 
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 class CountKeywordsTest {
     private CountKeywords visitor;
@@ -51,6 +50,7 @@ class CountKeywordsTest {
         assertEquals(0, count);
         verify(mockScenario).getSteps();
     }
+
     @Test
     void singleKeywordInStep() {
         Step step = mock(Step.class);
@@ -71,7 +71,35 @@ class CountKeywordsTest {
         verify(mockScenario).getSteps();
     }
 
+    @Test
+    void multipleKeywordsInSteps() {
+        Step step1 = mock(Step.class);
+        Step step2 = mock(Step.class);
 
+        when(step1.getText()).thenReturn("IF: condition is true");
+        when(step1.getSubsteps()).thenReturn(null);
+        when(step2.getText()).thenReturn("ELSE: do something else");
+        when(step2.getSubsteps()).thenReturn(null);
+        when(mockScenario.getSteps()).thenReturn(Arrays.asList(step1, step2));
+
+        doAnswer(invocation -> {
+            Visitor v = invocation.getArgument(0);
+            v.visit(step1);
+            return null;
+        }).when(step1).accept(any(Visitor.class));
+
+        doAnswer(invocation -> {
+            Visitor v = invocation.getArgument(0);
+            v.visit(step2);
+            return null;
+        }).when(step2).accept(any(Visitor.class));
+
+        visitor.visit(mockScenario);
+        Integer count = (Integer) visitor.getResult();
+
+        assertEquals(2, count);
+        verify(mockScenario).getSteps();
+    }
 
 
     @AfterEach
