@@ -29,6 +29,18 @@ class CountStepsTest {
         Integer count = (Integer) visitor.getResult();
         assertEquals(0, count);
         verify(mockScenario).getSteps();
+
+    }
+
+    @Test
+    void singleStepScenario() {
+        when(mockScenario.getSteps()).thenReturn(Collections.emptyList());
+        visitor.visit(mockScenario);
+        //mockScenario.accept(visitor);
+        Integer count = (Integer) visitor.getResult();
+        assertEquals(1, count);
+        verify(mockScenario).getSteps();
+
     }
 
     @AfterEach
