@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import pl.put.poznan.sqc.logic.model.Scenario;
 import pl.put.poznan.sqc.logic.model.Step;
 
-import java.util.Arrays;
+
 import java.util.Collections;
-import java.util.List;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,6 +51,26 @@ class CountKeywordsTest {
         assertEquals(0, count);
         verify(mockScenario).getSteps();
     }
+    @Test
+    void singleKeywordInStep() {
+        Step step = mock(Step.class);
+        when(step.getText()).thenReturn("IF: one keyword here");
+        when(step.getSubsteps()).thenReturn(null);
+        when(mockScenario.getSteps()).thenReturn(Collections.singletonList(step));
+
+        doAnswer(invocation -> {
+            Visitor v = invocation.getArgument(0);
+            v.visit(step);
+            return null;
+        }).when(step).accept(any(Visitor.class));
+
+        visitor.visit(mockScenario);
+        Integer count = (Integer) visitor.getResult();
+
+        assertEquals(1, count);
+        verify(mockScenario).getSteps();
+    }
+
 
 
 
