@@ -57,7 +57,7 @@ class MaxDepthScenarioTest {
     }
 
     @Test
-    void maxDepthIsTwo() {
+    void depthTwo() {
         visitor = new MaxDepthScenario(2);
         Step parentStep = mock(Step.class);
         Step childStep = mock(Step.class);
