@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import pl.put.poznan.sqc.logic.model.Scenario;
 import pl.put.poznan.sqc.logic.model.Step;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -92,7 +93,36 @@ class MaxDepthScenarioTest {
         verify(mockScenario).getSteps();
     }
 
+    @Test
+    void multipleDepths() {
+        visitor = new MaxDepthScenario(2);
 
+        Step root = mock(Step.class);
+        Step child1 = mock(Step.class);
+        Step grandchild1 = mock(Step.class);
+        Step child2 = mock(Step.class);
+
+        when(grandchild1.getSubsteps()).thenReturn(null);
+        when(child1.getSubsteps()).thenReturn(Collections.singletonList(grandchild1));
+        when(child2.getSubsteps()).thenReturn(null);
+        when(root.getSubsteps()).thenReturn(Arrays.asList(child1, child2));
+        when(mockScenario.getSteps()).thenReturn(Collections.singletonList(root));
+
+        doAnswer(i -> { i.<Visitor>getArgument(0).visit(root); return null; })
+                .when(root).accept(any());
+        doAnswer(i -> { i.<Visitor>getArgument(0).visit(child1); return null; })
+                .when(child1).accept(any());
+        doAnswer(i -> { i.<Visitor>getArgument(0).visit(child2); return null; })
+                .when(child2).accept(any());
+        doAnswer(i -> { i.<Visitor>getArgument(0).visit(grandchild1); return null; })
+                .when(grandchild1).accept(any());
+
+        visitor.visit(mockScenario);
+
+        verify(child1).setSubsteps(null);
+        verify(child2).setSubsteps(null);
+        verify(root, never()).setSubsteps(null);
+    }
     @AfterEach
     void tearDown() {
         visitor = null;
