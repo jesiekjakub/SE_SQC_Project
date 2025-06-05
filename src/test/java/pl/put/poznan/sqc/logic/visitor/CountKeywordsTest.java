@@ -32,6 +32,27 @@ class CountKeywordsTest {
         verify(mockScenario).getSteps();
     }
 
+    @Test
+    void noKeywordsInScenario() {
+        Step step = mock(Step.class);
+        when(step.getText()).thenReturn("No keywords here");
+        when(step.getSubsteps()).thenReturn(null);
+        when(mockScenario.getSteps()).thenReturn(Collections.singletonList(step));
+
+        doAnswer(invocation -> {
+            Visitor v = invocation.getArgument(0);
+            v.visit(step);
+            return null;
+        }).when(step).accept(any(Visitor.class));
+
+        visitor.visit(mockScenario);
+        Integer count = (Integer) visitor.getResult();
+
+        assertEquals(0, count);
+        verify(mockScenario).getSteps();
+    }
+
+
 
     @AfterEach
     void tearDown() {
