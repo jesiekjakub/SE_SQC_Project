@@ -33,9 +33,9 @@ public class GUI extends JFrame {
         endpointMap = new LinkedHashMap<>();
         endpointMap.put("Count Steps", "http://127.0.0.1:8080/count_steps");
         endpointMap.put("Count Keywords", "http://127.0.0.1:8080/count_keywords");
-        // endpointMap.put("Max Depth", "http://127.0.0.1:8080/max_depth");
-        // endpointMap.put("Download", "http://127.0.0.1:8080/download");
-        // endpointMap.put("Invalid steps", "http://127.0.0.1:8080/actor_action");
+        endpointMap.put("Max Depth", "http://127.0.0.1:8080/max_depth");
+        endpointMap.put("Download", "http://127.0.0.1:8080/download");
+        endpointMap.put("Invalid steps", "http://127.0.0.1:8080/actor_action");
 
         endpointGroup = new ButtonGroup();
         JPanel radioPanel = new JPanel(new GridLayout(0, 1));
