@@ -129,4 +129,51 @@ class ActorActionTest {
         verify(step).getText();
         verify(step).accept(visitor);
     }
+
+    @Test
+    void invalidSystemActorSingleStep() {
+        // Configuration
+        Step step = spy(new Step());
+        when(step.getSubsteps()).thenReturn(null);
+        when(step.getText()).thenReturn("A form is displayed");
+        when(mockScenario.getActors()).thenReturn(Collections.singletonList("Librarian"));
+        when(mockScenario.getSteps()).thenReturn(Collections.singletonList(step));
+
+        // Interaction
+        visitor.visit(mockScenario);
+        List<Step> invalidSteps = (List<Step>) visitor.getResult();
+
+        // Verification
+        assertEquals(1, invalidSteps.size());
+        assertSame(step, invalidSteps.get(0));
+        verify(mockScenario).getSteps();
+        verify(mockScenario).getSystemActor();
+        verify(mockScenario).getActors();
+        verify(step).getSubsteps();
+        verify(step).getText();
+        verify(step).accept(visitor);
+    }
+
+    @Test
+    void validSystemActorSingleStep() {
+        // Configuration
+        Step step = spy(new Step());
+        when(step.getSubsteps()).thenReturn(null);
+        when(step.getText()).thenReturn("System displays a form");
+        when(mockScenario.getActors()).thenReturn(Collections.singletonList("Librarian"));
+        when(mockScenario.getSteps()).thenReturn(Collections.singletonList(step));
+
+        // Interaction
+        visitor.visit(mockScenario);
+        List<Step> invalidSteps = (List<Step>) visitor.getResult();
+
+        // Verification
+        assertTrue(invalidSteps.isEmpty());
+        verify(mockScenario).getSteps();
+        verify(mockScenario).getSystemActor();
+        verify(mockScenario).getActors();
+        verify(step).getSubsteps();
+        verify(step).getText();
+        verify(step).accept(visitor);
+    }
 }
