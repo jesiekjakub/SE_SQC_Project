@@ -53,8 +53,57 @@ class CountStepsTest {
 
         // Verification
         assertEquals(1, count);
+        verify(mockScenario).getSteps();
         verify(step).getSubsteps();
         verify(step).accept(visitor);
+    }
+
+    @Test
+    void singleNestedStep() {
+        // Configuration
+        Step step = spy(new Step());
+        Step subStep = spy(new Step());
+        when(subStep.getSubsteps()).thenReturn(null);
+        when(step.getSubsteps()).thenReturn(Collections.singletonList(subStep));
+        when(mockScenario.getSteps()).thenReturn(Collections.singletonList(step));
+
+        // Interaction
+        visitor.visit(mockScenario);
+        Integer count = (Integer) visitor.getResult();
+
+        // Verification
+        assertEquals(2, count);
+        verify(mockScenario).getSteps();
+        verify(step).accept(visitor);
+        verify(step,times(2)).getSubsteps();
+        verify(subStep).accept(visitor);
+        verify(subStep).getSubsteps();
+    }
+
+    @Test
+    void doublyNestedSteps() {
+        // Configuration
+        Step step = spy(new Step());
+        Step subStep = spy(new Step());
+        Step subsubStep = spy(new Step());
+        when(subsubStep.getSubsteps()).thenReturn(null);
+        when(subStep.getSubsteps()).thenReturn(Collections.singletonList(subsubStep));
+        when(step.getSubsteps()).thenReturn(Collections.singletonList(subStep));
+        when(mockScenario.getSteps()).thenReturn(Collections.singletonList(step));
+
+        // Interaction
+        visitor.visit(mockScenario);
+        Integer count = (Integer) visitor.getResult();
+
+        // Verification
+        assertEquals(3, count);
+        verify(mockScenario).getSteps();
+        verify(step).accept(visitor);
+        verify(step,times(2)).getSubsteps();
+        verify(subStep).accept(visitor);
+        verify(subStep,times(2)).getSubsteps();
+        verify(subsubStep).accept(visitor);
+        verify(subsubStep).getSubsteps();
     }
 
     @AfterEach
