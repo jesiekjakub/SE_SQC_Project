@@ -176,4 +176,63 @@ class ActorActionTest {
         verify(step).getText();
         verify(step).accept(visitor);
     }
+
+    @Test
+    void validActorsNestedStep() {
+        // Configuration
+        Step step = spy(new Step());
+        Step subStep = spy(new Step());
+        when(subStep.getSubsteps()).thenReturn(null);
+        when(step.getSubsteps()).thenReturn(Collections.singletonList(subStep));
+        when(subStep.getText()).thenReturn("Intern enters the instance details and confirms them.");
+        when(step.getText()).thenReturn("Librarian chooses to add an instance");
+        when(mockScenario.getActors()).thenReturn(Arrays.asList("Librarian", "Intern"));
+        when(mockScenario.getSteps()).thenReturn(Collections.singletonList(step));
+
+        // Interaction
+        visitor.visit(mockScenario);
+        List<Step> invalidSteps = (List<Step>) visitor.getResult();
+
+        // Verification
+        assertTrue(invalidSteps.isEmpty());
+        verify(mockScenario).getSteps();
+        verify(mockScenario).getSystemActor();
+        verify(mockScenario).getActors();
+        verify(step,times(2)).getSubsteps();
+        verify(step).getText();
+        verify(step).accept(visitor);
+        verify(subStep).getSubsteps();
+        verify(subStep).getText();
+        verify(subStep).accept(visitor);
+    }
+
+    @Test
+    void oneInvalidActorNestedStep() {
+        // Configuration
+        Step step = spy(new Step());
+        Step subStep = spy(new Step());
+        when(subStep.getSubsteps()).thenReturn(null);
+        when(step.getSubsteps()).thenReturn(Collections.singletonList(subStep));
+        when(subStep.getText()).thenReturn("Intern enters the instance details and confirms them.");
+        when(step.getText()).thenReturn("Librarian chooses to add an instance");
+        when(mockScenario.getActors()).thenReturn(Arrays.asList("Librarian", "JuniorDev"));
+        when(mockScenario.getSteps()).thenReturn(Collections.singletonList(step));
+
+        // Interaction
+        visitor.visit(mockScenario);
+        List<Step> invalidSteps = (List<Step>) visitor.getResult();
+
+        // Verification
+        assertEquals(1,invalidSteps.size());
+        assertSame(subStep,invalidSteps.get(0));
+        verify(mockScenario).getSteps();
+        verify(mockScenario).getSystemActor();
+        verify(mockScenario).getActors();
+        verify(step,times(2)).getSubsteps();
+        verify(step).getText();
+        verify(step).accept(visitor);
+        verify(subStep).getSubsteps();
+        verify(subStep).getText();
+        verify(subStep).accept(visitor);
+    }
 }
