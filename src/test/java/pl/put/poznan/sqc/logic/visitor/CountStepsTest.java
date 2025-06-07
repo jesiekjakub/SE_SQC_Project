@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.put.poznan.sqc.logic.model.Scenario;
 import pl.put.poznan.sqc.logic.model.Step;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,6 +57,28 @@ class CountStepsTest {
         verify(mockScenario).getSteps();
         verify(step).getSubsteps();
         verify(step).accept(visitor);
+    }
+
+    @Test
+    void twoStepsZeroLevel() {
+        // Configuration
+        Step step1 = spy(new Step());
+        when(step1.getSubsteps()).thenReturn(null);
+        Step step2 = spy(new Step());
+        when(step2.getSubsteps()).thenReturn(null);
+        when(mockScenario.getSteps()).thenReturn(Arrays.asList(step1,step2));
+
+        // Interaction
+        visitor.visit(mockScenario);
+        Integer count = (Integer) visitor.getResult();
+
+        // Verification
+        assertEquals(2, count);
+        verify(mockScenario).getSteps();
+        verify(step1).getSubsteps();
+        verify(step1).accept(visitor);
+        verify(step2).getSubsteps();
+        verify(step2).accept(visitor);
     }
 
     @Test
@@ -105,6 +128,8 @@ class CountStepsTest {
         verify(subsubStep).accept(visitor);
         verify(subsubStep).getSubsteps();
     }
+
+
 
     @AfterEach
     void tearDown() {
